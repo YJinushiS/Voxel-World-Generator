@@ -133,31 +133,37 @@ public class World : MonoBehaviour
     }
     public byte GetVoxel(Vector3 pos)
     {
+        int yPos = Mathf.FloorToInt(pos.y * Chunk.IncreaseToInt);
+        #region Imuttable Pass
 
+        //If Outside the World, return air
         if (!IsVoxelInWorld(pos))
         {
             return 0;
         }
-        else if (pos.y < 1 * VoxelData.VoxelSize)
+        // if BottomVoxel of chunk, return Azov
+        if(yPos == 0)
         {
             return 1;
         }
-        else if (pos.y > (VoxelData.ChunkHeightInVoxels - 5) * VoxelData.VoxelSize)
+        #endregion
+        #region Basic Terrain Pass
+        int terrainHeight = (Mathf.FloorToInt(VoxelData.ChunkHeightInVoxels * Noise.Get2DPerlin(new Vector2(pos.x, pos.z), 0, 0.25f))+Mathf.FloorToInt(VoxelData.ChunkHeightInVoxels * Noise.Get2DPerlin(new Vector2(pos.x, pos.z), 10000, 20))/2);
+        if (yPos <= terrainHeight)
         {
-            float tempNoise = Noise.Get2DPerlin(new Vector2(pos.x, pos.z), 0, 1f);
-            if (tempNoise < 1f / 3) return 8;
-            else if (tempNoise < 2f / 3) return 9;
-            else return 10;
-        }
-        else if (pos.y < (VoxelData.ChunkHeightInVoxels - 4) * VoxelData.VoxelSize && pos.y > (VoxelData.ChunkHeightInVoxels - 21) * VoxelData.VoxelSize)
-        {
-            return Convert.ToByte(_random.Next(5, 8));
+            if (0 == yPos % 3)
+                return 8;
+            else if (1 == yPos % 3)
+                return 8;
+            else
+                return 8; 
         }
         else
         {
-            return Convert.ToByte(_random.Next(2, 5));
+            return 0;
         }
 
+        #endregion
     }
 
 }

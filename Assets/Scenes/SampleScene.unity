@@ -535,7 +535,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Player: {fileID: 330585546}
   Spawn: {x: 0, y: 0, z: 0}
-  seed: 231231244
+  seed: 231231243
   VoxelAtlas: {fileID: 2100000, guid: d88772b7cf8b6d1459196e45c25adb88, type: 2}
   VoxelTypes:
   - VoxelName: Air
