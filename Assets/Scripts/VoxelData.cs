@@ -3,10 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 public static class VoxelData
 {
-    public static readonly int ChunkHeight = 4;
-    public static readonly int ChunkWidth = 4;
+    public static readonly int ChunkHeightInVoxels = 64;
+    public static readonly int ChunkWidthInVoxels = 32;
+    public static readonly int WorldSizeInChunks = 4;
+    public static readonly int ViewDistanceInChunks = 8;
+    public static int WorldSizeInVoxels
+    {
+
+        get { return WorldSizeInChunks * ChunkWidthInVoxels; }
+
+    }
 
     public static float VoxelSize = 0.25f;
+    public static readonly int VoxelAtlasSize = 256;
+    public static float NormalizedVoxelTextureSizeInAtlas { get { return 1f / (float)VoxelAtlasSize; } }
 
     public static readonly Vector3[] VoxelVerts = new Vector3[8]
     {
