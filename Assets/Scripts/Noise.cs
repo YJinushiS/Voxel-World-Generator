@@ -2,17 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Noise : MonoBehaviour
+public class Noise
 {
-    // Start is called before the first frame update
-    void Start()
+    public static float Get2DPerlin(Vector2 position, float offset,float scale)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        return Mathf.PerlinNoise((position.x + 0.1f) / (VoxelData.ChunkWidthInVoxels * VoxelData.VoxelSize) * scale + offset, (position.y + 0.1f) / (VoxelData.ChunkWidthInVoxels * VoxelData.VoxelSize) * scale + offset);
     }
 }

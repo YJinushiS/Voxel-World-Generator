@@ -8,6 +8,8 @@ public class World : MonoBehaviour
     public Transform Player;
     public Vector3 Spawn;
 
+    public int seed;
+
     private System.Random _random = new System.Random();
 
     public Material VoxelAtlas;
@@ -19,7 +21,7 @@ public class World : MonoBehaviour
 
     private void Start()
     {
-
+        UnityEngine.Random.InitState(seed);
         GenerateWorld();
         _playerLastChunkCoord = GetChunkCoordFromVector3(Player.transform.position);
 
@@ -35,7 +37,6 @@ public class World : MonoBehaviour
 
     ChunkCoord GetChunkCoordFromVector3(Vector3 pos)
     {
-
         int x = Mathf.FloorToInt(pos.x / VoxelData.ChunkWidthInVoxels);
         int z = Mathf.FloorToInt(pos.z / VoxelData.ChunkWidthInVoxels);
         return new ChunkCoord(x, z);
@@ -49,12 +50,12 @@ public class World : MonoBehaviour
             for (int z = 0; z < VoxelData.WorldSizeInChunks; z++)
             {
 
-                CreateChunk(x,z);
+                CreateChunk(x, z);
 
             }
         }
 
-        Spawn = new Vector3(VoxelData.WorldSizeInVoxels* VoxelData.VoxelSize/2, (VoxelData.ChunkHeightInVoxels)*VoxelData.VoxelSize + 2, VoxelData.WorldSizeInVoxels* VoxelData.VoxelSize/2);
+        Spawn = new Vector3(VoxelData.WorldSizeInVoxels * VoxelData.VoxelSize / 2, (VoxelData.ChunkHeightInVoxels) * VoxelData.VoxelSize + 2, VoxelData.WorldSizeInVoxels * VoxelData.VoxelSize / 2);
         Player.position = Spawn;
 
     }
@@ -79,7 +80,7 @@ public class World : MonoBehaviour
                     ChunkCoord thisChunk = new ChunkCoord(x, z);
 
                     if (_chunks[x, z] == null)
-                        CreateChunk(thisChunk.x,thisChunk.z);
+                        CreateChunk(thisChunk.x, thisChunk.z);
                     else if (!_chunks[x, z].isActive)
                     {
                         _chunks[x, z].isActive = true;
@@ -116,7 +117,7 @@ public class World : MonoBehaviour
     bool IsVoxelInWorld(Vector3 pos)
     {
 
-        if (pos.x >= 0 && pos.x < VoxelData.WorldSizeInVoxels*VoxelData.VoxelSize && pos.y >= 0 && pos.y < VoxelData.ChunkHeightInVoxels * VoxelData.VoxelSize && pos.z >= 0 && pos.z < VoxelData.WorldSizeInVoxels * VoxelData.VoxelSize)
+        if (pos.x >= 0 && pos.x < VoxelData.WorldSizeInVoxels * VoxelData.VoxelSize && pos.y >= 0 && pos.y < VoxelData.ChunkHeightInVoxels * VoxelData.VoxelSize && pos.z >= 0 && pos.z < VoxelData.WorldSizeInVoxels * VoxelData.VoxelSize)
             return true;
         else
             return false;
@@ -134,15 +135,28 @@ public class World : MonoBehaviour
     {
 
         if (!IsVoxelInWorld(pos))
+        {
             return 0;
-        if (pos.y < 1 * VoxelData.VoxelSize)
+        }
+        else if (pos.y < 1 * VoxelData.VoxelSize)
+        {
             return 1;
+        }
         else if (pos.y > (VoxelData.ChunkHeightInVoxels - 5) * VoxelData.VoxelSize)
-            return Convert.ToByte(_random.Next(8, 11));
+        {
+            float tempNoise = Noise.Get2DPerlin(new Vector2(pos.x, pos.z), 0, 1f);
+            if (tempNoise < 1f / 3) return 8;
+            else if (tempNoise < 2f / 3) return 9;
+            else return 10;
+        }
         else if (pos.y < (VoxelData.ChunkHeightInVoxels - 4) * VoxelData.VoxelSize && pos.y > (VoxelData.ChunkHeightInVoxels - 21) * VoxelData.VoxelSize)
+        {
             return Convert.ToByte(_random.Next(5, 8));
+        }
         else
+        {
             return Convert.ToByte(_random.Next(2, 5));
+        }
 
     }
 
