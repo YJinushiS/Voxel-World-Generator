@@ -30,8 +30,8 @@ public class World : MonoBehaviour
     private void Update()
     {
 
-        //if (!GetChunkCoordFromVector3(Player.transform.position).Equals(_playerLastChunkCoord))
-        //CheckViewDistance();
+        if (!GetChunkCoordFromVector3(Player.transform.position).Equals(_playerLastChunkCoord))
+        CheckViewDistance();
 
     }
 
@@ -45,9 +45,9 @@ public class World : MonoBehaviour
     private void GenerateWorld()
     {
 
-        for (int x = 0; x < VoxelData.WorldSizeInChunks; x++)
+        for (int x = (VoxelData.WorldSizeInChunks/2) - VoxelData.ViewDistanceInChunks; x < VoxelData.WorldSizeInChunks; x++)
         {
-            for (int z = 0; z < VoxelData.WorldSizeInChunks; z++)
+            for (int z = (VoxelData.WorldSizeInChunks/2) - VoxelData.ViewDistanceInChunks; z < VoxelData.WorldSizeInChunks; z++)
             {
 
                 CreateChunk(x, z);
@@ -63,8 +63,8 @@ public class World : MonoBehaviour
     private void CheckViewDistance()
     {
 
-        int chunkX = Mathf.FloorToInt(Player.position.x / VoxelData.ChunkWidthInVoxels);
-        int chunkZ = Mathf.FloorToInt(Player.position.z / VoxelData.ChunkWidthInVoxels);
+        int chunkX = Mathf.FloorToInt(Player.position.x / (VoxelData.ChunkWidthInVoxels * VoxelData.VoxelSize));
+        int chunkZ = Mathf.FloorToInt(Player.position.z / (VoxelData.ChunkWidthInVoxels* VoxelData.VoxelSize));
 
         List<ChunkCoord> previouslyActiveChunks = new List<ChunkCoord>(_activeChunks);
 
@@ -142,21 +142,16 @@ public class World : MonoBehaviour
             return 0;
         }
         // if BottomVoxel of chunk, return Azov
-        if(yPos == 0)
+        if (yPos == 0)
         {
             return 1;
         }
         #endregion
         #region Basic Terrain Pass
-        int terrainHeight = (Mathf.FloorToInt(VoxelData.ChunkHeightInVoxels * Noise.Get2DPerlin(new Vector2(pos.x, pos.z), 0, 0.25f))+Mathf.FloorToInt(VoxelData.ChunkHeightInVoxels * Noise.Get2DPerlin(new Vector2(pos.x, pos.z), 10000, 20))/2);
+        int terrainHeight = (Mathf.FloorToInt(VoxelData.ChunkHeightInVoxels * Noise.Get2DPerlin(new Vector2(pos.x, pos.z), 0, 1)));
         if (yPos <= terrainHeight)
         {
-            if (0 == yPos % 3)
-                return 8;
-            else if (1 == yPos % 3)
-                return 8;
-            else
-                return 8; 
+            return 8;
         }
         else
         {
