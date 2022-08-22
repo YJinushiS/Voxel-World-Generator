@@ -112,15 +112,6 @@ public class Player : MonoBehaviour
         targetRotation.x = _xRotation;
         _cameraTransform.eulerAngles = targetRotation;
     }
-    private void Move(float currentSpeed)
-    {
-        GetPlayerInputs();
-        Vector3 movement = ((transform.forward * _keyboardInput.y) + (transform.right * _keyboardInput.x)) * Time.deltaTime * currentSpeed;
-        movement.y += 1 * _gravity * Time.deltaTime;
-        movement.y = CheckDownSpeed(movement.y);
-        _velocity = movement;
-        transform.Translate(movement, Space.World);
-    }
 
     private void Jump()
     {
