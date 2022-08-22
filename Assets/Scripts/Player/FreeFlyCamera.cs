@@ -51,18 +51,6 @@ public class FreeFlyCamera : MonoBehaviour
     [Tooltip("Speed of the quick camera movement when holding the 'Left Shift' key")]
     private float _boostedSpeed = 50f;
 
-    [SerializeField]
-    [Tooltip("Boost speed")]
-    private KeyCode _boostSpeed = KeyCode.LeftShift;
-
-    [SerializeField]
-    [Tooltip("Move up")]
-    private KeyCode _moveUp = KeyCode.E;
-
-    [SerializeField]
-    [Tooltip("Move down")]
-    private KeyCode _moveDown = KeyCode.Q;
-
     [Space]
 
     [SerializeField]
@@ -74,10 +62,6 @@ public class FreeFlyCamera : MonoBehaviour
     private float _speedAccelerationFactor = 1.5f;
 
     [Space]
-
-    [SerializeField]
-    [Tooltip("This keypress will move the camera to initialization position")]
-    private KeyCode _initPositonButton = KeyCode.R;
 
     #endregion UI
     private Keyboard _keyboard;

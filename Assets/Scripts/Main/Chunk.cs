@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Chunk
 {
-    #region variables
+    #region Variables
     public ChunkCoord Coord;
     MeshRenderer _chunkMeshRenderer;
     MeshFilter _chunkMeshFilter;
@@ -19,17 +19,29 @@ public class Chunk
     List<int> _triangles = new List<int>();
     List<Vector2> _uvs = new List<Vector2>();
 
-    byte[,,] _voxelMap = new byte[VoxelData.ChunkWidthInVoxels, VoxelData.ChunkHeightInVoxels, VoxelData.ChunkWidthInVoxels];
+    public byte[,,] VoxelMap = new byte[VoxelData.ChunkWidthInVoxels, VoxelData.ChunkHeightInVoxels, VoxelData.ChunkWidthInVoxels];
 
     public World WorldObj;
+
+    private bool _isActive;
+    public bool IsVoxelMapPopulated = false;
     #endregion
-    public Chunk(ChunkCoord coord,World world)
+    public Chunk(ChunkCoord coord, World world, bool generateOnLoad)
     {
         Coord = coord;
-        _chunkObject = new GameObject();
-        _chunkObject.transform.position = new Vector3((Coord.x * VoxelData.ChunkWidthInVoxels)* VoxelSize, 0f, (Coord.z * VoxelData.ChunkWidthInVoxels)*VoxelSize);
-
         WorldObj = world;
+
+        IsActive = true;
+
+        if (generateOnLoad)
+        {
+            Initialize();
+        }
+    }
+    public void Initialize()
+    {
+        _chunkObject = new GameObject();
+        _chunkObject.transform.position = new Vector3((Coord.X * VoxelData.ChunkWidthInVoxels) * VoxelSize, 0f, (Coord.Z * VoxelData.ChunkWidthInVoxels) * VoxelSize);
         _chunkMeshFilter = _chunkObject.AddComponent<MeshFilter>();
         _chunkMeshRenderer = _chunkObject.AddComponent<MeshRenderer>();
 
@@ -40,11 +52,16 @@ public class Chunk
         CreateMeshData();
         CreateMesh();
     }
-    public bool isActive
+    public bool IsActive
     {
 
-        get { return _chunkObject.activeSelf; }
-        set { _chunkObject.SetActive(value); }
+        get { return _isActive; }
+        set
+        {
+            _isActive = value;
+            if (_chunkObject != null)
+                _chunkObject.SetActive(value);
+        }
 
     }
     Vector3 position
@@ -56,7 +73,7 @@ public class Chunk
     bool IsVoxelInChunk(int x, int y, int z)
     {
 
-        if (x < 0 || x > VoxelData.ChunkWidthInVoxels - 1*VoxelData.VoxelSize || y < 0 || y > VoxelData.ChunkHeightInVoxels - 1* VoxelData.VoxelSize || z < 0 || z > VoxelData.ChunkWidthInVoxels - 1* VoxelData.VoxelSize)
+        if (x < 0 || x > VoxelData.ChunkWidthInVoxels - 1 * VoxelData.VoxelSize || y < 0 || y > VoxelData.ChunkHeightInVoxels - 1 * VoxelData.VoxelSize || z < 0 || z > VoxelData.ChunkWidthInVoxels - 1 * VoxelData.VoxelSize)
             return false;
         else return true;
 
@@ -69,10 +86,11 @@ public class Chunk
             {
                 for (int z = 0; z < VoxelData.ChunkWidthInVoxels; z++)
                 {
-                    _voxelMap[x, y, z] = WorldObj.GetVoxel(new Vector3(x*VoxelSize, y*VoxelSize, z*VoxelSize) + position);
+                    VoxelMap[x, y, z] = WorldObj.GetVoxel(new Vector3(x * VoxelSize, y * VoxelSize, z * VoxelSize) + position);
                 }
             }
         }
+        IsVoxelMapPopulated = true;
     }
     void CreateMeshData()
     {
@@ -82,7 +100,7 @@ public class Chunk
             {
                 for (int z = 0; z < VoxelData.ChunkWidthInVoxels; z++)
                 {
-                    if (WorldObj.VoxelTypes[_voxelMap[x, y, z]].IsSolid)
+                    if (WorldObj.VoxelTypes[VoxelMap[x, y, z]].IsSolid)
                         AddVoxelDataToChunk(new Vector3(x * VoxelSize, y * VoxelSize, z * VoxelSize));
                 }
             }
@@ -93,7 +111,7 @@ public class Chunk
 
         pos -= position;
 
-        return _voxelMap[(int)pos.x, (int)pos.y, (int)pos.z];
+        return VoxelMap[(int)pos.x, (int)pos.y, (int)pos.z];
 
     }
     bool CheckVoxel(Vector3 pos)
@@ -104,10 +122,20 @@ public class Chunk
         int z = Mathf.FloorToInt(pos.z * IncreaseToInt);
 
         if (!IsVoxelInChunk(x, y, z))
-            return WorldObj.VoxelTypes[WorldObj.GetVoxel(pos + position)].IsSolid;
+            return WorldObj.CheckForVoxel(pos);
 
-        return WorldObj.VoxelTypes[_voxelMap[x, y, z]].IsSolid;
+        return WorldObj.VoxelTypes[VoxelMap[x, y, z]].IsSolid;
 
+    }
+    public byte GetVoxelFromGlobalVector3(Vector3 pos)
+    {
+        int xCheck = Mathf.FloorToInt(pos.x * IncreaseToInt);
+        int yCheck = Mathf.FloorToInt(pos.y * IncreaseToInt);
+        int zCheck = Mathf.FloorToInt(pos.z * IncreaseToInt);
+
+        xCheck -= Mathf.FloorToInt(_chunkObject.transform.position.x);
+        zCheck -= Mathf.FloorToInt(_chunkObject.transform.position.z);
+        return VoxelMap[xCheck, yCheck, zCheck];
     }
     void AddVoxelDataToChunk(Vector3 pos)
     {
@@ -115,7 +143,7 @@ public class Chunk
         {
             if (!CheckVoxel(pos + VoxelData.FaceCheck[j]))
             {
-                byte voxelID = _voxelMap[(int)(pos.x * IncreaseToInt), (int)(pos.y * IncreaseToInt), (int)(pos.z * IncreaseToInt)];
+                byte voxelID = VoxelMap[(int)(pos.x * IncreaseToInt), (int)(pos.y * IncreaseToInt), (int)(pos.z * IncreaseToInt)];
 
                 _vertices.Add(pos + VoxelData.VoxelVerts[VoxelData.VoxelTris[j, 0]]);
                 _vertices.Add(pos + VoxelData.VoxelVerts[VoxelData.VoxelTris[j, 1]]);
@@ -167,15 +195,29 @@ public class Chunk
 public class ChunkCoord
 {
 
-    public int x;
-    public int z;
+    public int X;
+    public int Z;
 
+    public ChunkCoord()
+    {
+        X = 0;
+        Z = 0;
+    }
     public ChunkCoord(int _x, int _z)
     {
 
-        x = _x;
-        z = _z;
+        X = _x;
+        Z = _z;
 
+    }
+
+    public ChunkCoord(Vector3 pos)
+    {
+        int xCheck = Mathf.FloorToInt(pos.x);
+        int zCheck = Mathf.FloorToInt(pos.z);
+
+        X = xCheck / VoxelData.ChunkWidthInVoxels;
+        Z = zCheck / VoxelData.ChunkWidthInVoxels;
     }
 
     public bool Equals(ChunkCoord other)
@@ -183,7 +225,7 @@ public class ChunkCoord
 
         if (other == null)
             return false;
-        else if (other.x == x && other.z == z)
+        else if (other.X == X && other.Z == Z)
             return true;
         else
             return false;
