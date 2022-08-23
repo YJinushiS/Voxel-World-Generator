@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - World
+  - DebugScreen
   layers:
   - Default
   - TransparentFX
