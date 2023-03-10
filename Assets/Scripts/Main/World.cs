@@ -14,6 +14,7 @@ public class World : MonoBehaviour
     [SerializeField]private float _random;
     [Space]
     public Material VoxelAtlas;
+    public Material VoxelAtlasTransparent;
     public Material Water;
     public VoxelType[] VoxelTypes;
     public BiomeAttributes Biome;
@@ -25,7 +26,7 @@ public class World : MonoBehaviour
     List<ChunkCoord> _chunksToCreate = new List<ChunkCoord>();
     private bool _isCreatingChunks;
     #endregion
-    private void Start()
+    private void Awake()
     {
         UnityEngine.Random.InitState(_seed);
         Debug.Log(UnityEngine.Random.value);
@@ -40,7 +41,7 @@ public class World : MonoBehaviour
     private void Update()
     {
         PlayerChunkCoord = GetChunkCoordFromVector3(Player.transform.position);
-        if (!GetChunkCoordFromVector3(Player.transform.position).Equals(_playerLastChunkCoord))
+        if (!PlayerChunkCoord.Equals(_playerLastChunkCoord))
             CheckViewDistance();
         if(_chunksToCreate.Count > 0 && !_isCreatingChunks)
         {
@@ -181,6 +182,17 @@ public class World : MonoBehaviour
 
         //return VoxelTypes[_chunks[xChunk, zChunk].VoxelMap[xCheck, yCheck, zCheck]].IsSolid;
     }
+    public bool CheckIfVoxelTransparent(Vector3 pos)
+    {
+        ChunkCoord thisChunk = new ChunkCoord(pos);
+        if (!IsChunkInWorld(thisChunk) || pos.y < 0 || pos.y > VoxelData.ChunkHeightInVoxels * VoxelData.VoxelSize)
+            return false;
+        if (_chunks[thisChunk.X, thisChunk.Z] != null && _chunks[thisChunk.X, thisChunk.Z].IsVoxelMapPopulated)
+        {
+            return VoxelTypes[_chunks[thisChunk.X, thisChunk.Z].GetVoxelFromGlobalVector3(pos)].IsTransparent;
+        }
+        return VoxelTypes[GetVoxel(pos)].IsTransparent;
+    }
     public byte GetVoxel(Vector3 pos)
     {
         int yPos = Mathf.FloorToInt(pos.y * Chunk.IncreaseToInt);
@@ -245,6 +257,8 @@ public class VoxelType
 {
     public string VoxelName;
     public bool IsSolid;
+    public bool IsTransparent;
+    public Sprite icon;
 
     [Header("Texture Values")]
     public int backFaceTexture;
@@ -278,8 +292,7 @@ public class VoxelType
                 Debug.Log("Error in GetTextureID; invalid face index");
                 return 0;
 
-
-        }
+}
 
     }
 }

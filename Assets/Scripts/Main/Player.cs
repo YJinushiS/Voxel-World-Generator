@@ -16,7 +16,6 @@ public class Player : MonoBehaviour
     private Vector2 _mouseLookInput;
     private bool _isCursorLocked;
     private Vector2 _keyboardInput;
-    private float _scrollInput;
 
     [SerializeField] private Transform _playerTransform;
     [SerializeField] private Transform _cameraTransform;
@@ -33,6 +32,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float _gravity = -9.8f;
 
     public float PlayerWidth = 2.4f;
+    public int VoxelRadius = 5;
     private float _xRotation;
     private Vector3 _velocity = Vector3.zero;
     private float _verticalMomentum;
@@ -40,10 +40,9 @@ public class Player : MonoBehaviour
     private VoxelWorldGenerator _inputActions;
     private PlayerInput _playerInput;
 
-    public TMP_Text SelectedBlockText;
     public byte SelectedBlockIndex = 1;
     #endregion
-    private void Start()
+    private void Awake()
     {
         _playerTransform = GetComponent<Transform>();
         Cursor.lockState = CursorLockMode.Locked;
@@ -57,7 +56,7 @@ public class Player : MonoBehaviour
         _inputActions.Enable();
         _uiDebugScreen = GameObject.FindGameObjectWithTag("DebugScreen");
         _uiDebugScreen.SetActive(false);
-        SelectedBlockText.text = _world.VoxelTypes[SelectedBlockIndex].VoxelName + " Voxel Selected";
+
     }
 
     private void Update()
@@ -138,7 +137,6 @@ public class Player : MonoBehaviour
     {
         _mouseLookInput = _inputActions.Player.Look.ReadValue<Vector2>();
         _keyboardInput = _inputActions.Player.Move.ReadValue<Vector2>();
-        _scrollInput = _inputActions.Player.Scroll.ReadValue<float>();
         if (_keyboard.shiftKey.wasPressedThisFrame)
         {
             IsSprinting = true;
@@ -165,36 +163,17 @@ public class Player : MonoBehaviour
 
         if (IsGrounded && _keyboard.spaceKey.wasPressedThisFrame) _jumpRequest = true;
 
-        if (_scrollInput != 0)
-        {
-            if (_scrollInput > 0)
-            {
-                SelectedBlockIndex++;
-            }
-            else
-            {
-                SelectedBlockIndex--;
-            }
-            if (SelectedBlockIndex > (byte)_world.VoxelTypes.Length - 1)
-            {
-                SelectedBlockIndex = 1;
-            }
-            else if (SelectedBlockIndex < 1)
-            {
-                SelectedBlockIndex = (byte)(_world.VoxelTypes.Length - 1);
-            }
-            SelectedBlockText.text = _world.VoxelTypes[SelectedBlockIndex].VoxelName + " Voxel Selected";
-        }
         if (HighlightBlock.gameObject.activeSelf)
         {
             //Destroy Block
             if (_mouse.leftButton.wasPressedThisFrame)
             {
-                _world.GetChunkFromVector3(HighlightBlock.position).EditVoxel(HighlightBlock.position, 0);
+
+                _world.GetChunkFromVector3(HighlightBlock.position).EditVoxelsInSphere(HighlightBlock.position, VoxelRadius, 0);
             }
             if (_mouse.rightButton.wasPressedThisFrame)
             {
-                _world.GetChunkFromVector3(PlaceBlock.position).EditVoxel(PlaceBlock.position, SelectedBlockIndex);
+                _world.GetChunkFromVector3(PlaceBlock.position).EditVoxelsInSphere(PlaceBlock.position,VoxelRadius, SelectedBlockIndex);
             }
         }
     }
@@ -224,6 +203,19 @@ public class Player : MonoBehaviour
 
         HighlightBlock.gameObject.SetActive(false);
         PlaceBlock.gameObject.SetActive(false);
+    }
+    private void EditVoxelsInSphere(Vector3 pos, int radius, byte newID)
+    {
+        for(int x = -radius; x <= radius; x++)
+            for (int y = -radius; y <= radius; y++)
+                for (int z = -radius; x <= radius; z++)
+                {
+                    Vector3 newPos = new Vector3(Mathf.FloorToInt(pos.x + x), Mathf.FloorToInt(pos.y + y), Mathf.FloorToInt(pos.z + z));
+                    if(Vector3.Distance(pos, newPos) <= (float)radius)
+                    {
+                        _world.GetChunkFromVector3(newPos).EditVoxel(newPos, 0);
+                    }
+                }
     }
     private float CheckDownSpeed(float downSpeed)
     {
