@@ -43,7 +43,7 @@ public class Chunk
     public void Initialize()
     {
         _chunkObject = new GameObject();
-        _chunkObject.transform.position = new Vector3((Coord.X * VoxelData.ChunkWidthInVoxels) * VoxelSize, 0f, (Coord.Z * VoxelData.ChunkWidthInVoxels) * VoxelSize);
+        _chunkObject.transform.position = new Vector3((Coord.X * VoxelData.ChunkWidthInVoxels) * VoxelSize, (Coord.Y * VoxelData.ChunkHeightInVoxels), (Coord.Z * VoxelData.ChunkWidthInVoxels) * VoxelSize);
         _chunkMeshFilter = _chunkObject.AddComponent<MeshFilter>();
         _chunkMeshRenderer = _chunkObject.AddComponent<MeshRenderer>();
 
@@ -90,6 +90,7 @@ public class Chunk
         int zCheck = Mathf.FloorToInt(pos.z);
 
         xCheck -= Mathf.FloorToInt(_chunkObject.transform.position.x);
+        yCheck -= Mathf.FloorToInt(_chunkObject.transform.position.y);
         zCheck -= Mathf.FloorToInt(_chunkObject.transform.position.z);
 
         VoxelMap[xCheck, yCheck, zCheck] = newID;
@@ -103,6 +104,7 @@ public class Chunk
         int zCheck = Mathf.FloorToInt(pos.z);
 
         xCheck -= Mathf.FloorToInt(_chunkObject.transform.position.x);
+        yCheck -= Mathf.FloorToInt(_chunkObject.transform.position.y);
         zCheck -= Mathf.FloorToInt(_chunkObject.transform.position.z);
 
         VoxelMap[xCheck, yCheck, zCheck] = newID;
@@ -304,6 +306,7 @@ public class Chunk
         int zCheck = Mathf.FloorToInt(pos.z);
 
         xCheck -= Mathf.FloorToInt(_chunkObject.transform.position.x);
+        yCheck -= Mathf.FloorToInt(_chunkObject.transform.position.y);
         zCheck -= Mathf.FloorToInt(_chunkObject.transform.position.z);
         return VoxelMap[xCheck, yCheck, zCheck];
     }
@@ -383,17 +386,20 @@ public class ChunkCoord
 {
 
     public int X;
+    public int Y;
     public int Z;
 
     public ChunkCoord()
     {
         X = 0;
+        Y = 0;
         Z = 0;
     }
-    public ChunkCoord(int _x, int _z)
+    public ChunkCoord(int _x, int _y, int _z)
     {
 
         X = _x;
+        Y = _y;
         Z = _z;
 
     }
@@ -401,9 +407,11 @@ public class ChunkCoord
     public ChunkCoord(Vector3 pos)
     {
         int xCheck = Mathf.FloorToInt(pos.x);
+        int yCheck = Mathf.FloorToInt(pos.y);
         int zCheck = Mathf.FloorToInt(pos.z);
 
         X = xCheck / VoxelData.ChunkWidthInVoxels;
+        Y = yCheck / VoxelData.ChunkHeightInVoxels;
         Z = zCheck / VoxelData.ChunkWidthInVoxels;
     }
 
@@ -412,7 +420,7 @@ public class ChunkCoord
 
         if (other == null)
             return false;
-        else if (other.X == X && other.Z == Z)
+        else if (other.X == X && other.Z == Z && other.Y == Y)
             return true;
         else
             return false;

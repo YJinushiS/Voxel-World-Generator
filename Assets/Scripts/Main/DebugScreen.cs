@@ -20,8 +20,8 @@ public class DebugScreen : MonoBehaviour
         _world = GameObject.FindGameObjectWithTag("World").GetComponent<World>();
         _text = GetComponent<TMP_Text>();
 
-        _halfWorldSizeInVoxels = (int)((VoxelData.WorldSizeInVoxels*VoxelData.VoxelSize) / 2);
-        _halfWorldSizeInChunks = VoxelData.WorldSizeInChunks / 2;
+        _halfWorldSizeInVoxels = (int)((VoxelData.WorldWidthInVoxels*VoxelData.VoxelSize) / 2);
+        _halfWorldSizeInChunks = VoxelData.WorldWidthInChunks / 2;
     }
     private void Update()
     {
