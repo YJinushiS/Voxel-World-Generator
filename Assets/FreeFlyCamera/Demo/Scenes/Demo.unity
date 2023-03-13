@@ -612,12 +612,9 @@ MonoBehaviour:
   _enableMovement: 1
   _movementSpeed: 10
   _boostedSpeed: 50
-  _boostSpeed: 304
-  _moveUp: 101
-  _moveDown: 113
   _enableSpeedAcceleration: 1
   _speedAccelerationFactor: 1.5
-  _initPositonButton: 114
+  _player: {fileID: 0}
 --- !u!1 &1819996183
 GameObject:
   m_ObjectHideFlags: 0

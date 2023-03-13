@@ -1,9 +1,4 @@
-﻿//===========================================================================//
-//                       FreeFlyCamera (Version 1.2)                         //
-//                        (c) 2019 Sergey Stafeyev                           //
-//===========================================================================//
-
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Camera))]

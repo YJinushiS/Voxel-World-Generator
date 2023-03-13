@@ -13,18 +13,17 @@ MonoBehaviour:
   m_Name: Plains
   m_EditorClassIdentifier: 
   BiomeName: Plains
-  SolidGroundHeight: 32
-  TerrainHeight: 96
-  TerrainScale: 0.01
-  TerrainOctaves: 10
-  TerrainPersistance: 0.5
-  TerrainRedistributionModifier: 1.2
-  Exponent: 5
-  Lodes:
-  - LodeName: Dirt
-    VoxelID: 7
-    MinHeight: 1
-    MaxHeight: 256
-    Scale: 1
-    Threshold: 0.575
-    Offset: 2
+  SolidGroundHeight: 64
+  TerrainHeight: 256
+  TerrainScale: 0.001
+  TerrainOctaves: 5
+  TerrainPersistance: 0.6
+  TerrainRedistributionModifier: 1
+  Exponent: 3
+  TreeZoneScale: 0.05
+  TreeZoneTreshold: 0.7
+  TreePlacementScale: 0.57
+  TreePlacementTreshold: 0.85
+  TreeMaxHeight: 96
+  TreeMinHeight: 40
+  Lodes: []

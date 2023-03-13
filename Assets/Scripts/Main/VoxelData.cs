@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 public static class VoxelData
 {
-    public static readonly int ChunkHeightInVoxels = 32;
-    public static readonly int ChunkWidthInVoxels = 32;
+    public static readonly int ChunkHeightInVoxels = 64;
+    public static readonly int ChunkWidthInVoxels = 64;
     public static readonly int WorldWidthInChunks = 40;
-    public static readonly int WorldHeightInChunks = 40;
-    public static readonly int ViewDistanceInChunks = 2;
+    public static readonly int WorldHeightInChunks = 10;
+    public static readonly int ViewDistanceInChunks = 3;
     public static int WorldWidthInVoxels
     {
 

@@ -149,11 +149,18 @@ public class Player : MonoBehaviour
             {
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
+                Time.timeScale = 0;
+                _isCursorLocked = false;
             }
-            else
+        }
+        if (_mouse.leftButton.wasPressedThisFrame)
+        {
+            if (!_isCursorLocked)
             {
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
+                Time.timeScale = 1;
+                _isCursorLocked = true;
             }
         }
         if (_keyboard.f3Key.wasPressedThisFrame)

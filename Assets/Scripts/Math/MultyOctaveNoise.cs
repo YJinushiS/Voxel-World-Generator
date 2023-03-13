@@ -26,10 +26,10 @@ public class MultyOctaveNoise
 
     public static float GetOctavePerlin(float x, float z, NoiseSettings settings)
     {
-        x *= settings.NoiseZoom;
-        z *= settings.NoiseZoom;
-        x += settings.NoiseZoom;
-        z += settings.NoiseZoom;
+        x *= settings.NoiseScale;
+        z *= settings.NoiseScale;
+        x += settings.NoiseScale;
+        z += settings.NoiseScale;
 
         float total = 0;
         float frequency = 1;
@@ -63,5 +63,52 @@ public class MultyOctaveNoise
         if ((AB + BC + AC + BA + CB + CA) / 6f > threshold)
             return true;
         else return false;
+    }
+
+    public static float GetTreeZoneOctavePerlin(float x, float z, NoiseSettings settings)
+    {
+        x *= settings.TreeZoneScale;
+        z *= settings.TreeZoneScale;
+        x += settings.TreeZoneScale;
+        z += settings.TreeZoneScale;
+
+        float total = 0;
+        float frequency = 1;
+        float amplitude = 1;
+        float amplitudeSum = 0;  // Used for normalizing result to 0.0 - 1.0 range
+        for (int i = 0; i < 1; i++)
+        {
+            total += Mathf.PerlinNoise((settings.Offset.x + settings.WorldOffset.x + x) * frequency, (settings.Offset.y + settings.WorldOffset.y + z) * frequency) * amplitude;
+
+            amplitudeSum += amplitude;
+
+            amplitude *= 1;
+            frequency *= 2;
+        }
+
+        return total / amplitudeSum;
+    }
+    public static float GetTreePlacementOctavePerlin(float x, float z, NoiseSettings settings)
+    {
+        x *= settings.TreePlacementScale;
+        z *= settings.TreePlacementScale;
+        x += settings.TreePlacementScale;
+        z += settings.TreePlacementScale;
+
+        float total = 0;
+        float frequency = 1;
+        float amplitude = 1;
+        float amplitudeSum = 0;  // Used for normalizing result to 0.0 - 1.0 range
+        for (int i = 0; i < 1; i++)
+        {
+            total += Mathf.PerlinNoise((settings.Offset.x + settings.WorldOffset.x + x) * frequency, (settings.Offset.y + settings.WorldOffset.y + z) * frequency) * amplitude;
+
+            amplitudeSum += amplitude;
+
+            amplitude *= 1;
+            frequency *= 2;
+        }
+
+        return total / amplitudeSum;
     }
 }
