@@ -31,8 +31,8 @@ public class Player : MonoBehaviour
     [SerializeField] private float _jumpForce = 5f;
     [SerializeField] private float _gravity = -9.8f;
 
-    public float PlayerWidth = 2.4f;
-    public int VoxelRadius = 5;
+    public float PlayerWidth = 4.8f, PlayerHeight = 32f;
+    public int VoxelRadius = 11; 
     private float _xRotation;
     private Vector3 _velocity = Vector3.zero;
     private float _verticalMomentum;
@@ -180,7 +180,7 @@ public class Player : MonoBehaviour
             }
             if (_mouse.rightButton.wasPressedThisFrame)
             {
-                _world.GetChunkFromVector3(PlaceBlock.position).EditVoxelsInSphere(PlaceBlock.position,VoxelRadius, SelectedBlockIndex);
+                _world.GetChunkFromVector3(PlaceBlock.position).EditVoxelsInSphere(PlaceBlock.position, VoxelRadius, SelectedBlockIndex);
             }
         }
     }
@@ -213,12 +213,12 @@ public class Player : MonoBehaviour
     }
     private void EditVoxelsInSphere(Vector3 pos, int radius, byte newID)
     {
-        for(int x = -radius; x <= radius; x++)
+        for (int x = -radius; x <= radius; x++)
             for (int y = -radius; y <= radius; y++)
                 for (int z = -radius; x <= radius; z++)
                 {
                     Vector3 newPos = new Vector3(Mathf.FloorToInt(pos.x + x), Mathf.FloorToInt(pos.y + y), Mathf.FloorToInt(pos.z + z));
-                    if(Vector3.Distance(pos, newPos) <= (float)radius)
+                    if (Vector3.Distance(pos, newPos) <= (float)radius)
                     {
                         _world.GetChunkFromVector3(newPos).EditVoxel(newPos, 0);
                     }
@@ -240,7 +240,17 @@ public class Player : MonoBehaviour
             _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 2f), _playerTransform.position.y + downSpeed, _playerTransform.position.z - (PlayerWidth - 2f))) ||
             _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 2f), _playerTransform.position.y + downSpeed, _playerTransform.position.z - (PlayerWidth - 2f))) ||
             _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 2f), _playerTransform.position.y + downSpeed, _playerTransform.position.z + (PlayerWidth - 2f))) ||
-            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 2f), _playerTransform.position.y + downSpeed, _playerTransform.position.z + (PlayerWidth - 2f)))
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 2f), _playerTransform.position.y + downSpeed, _playerTransform.position.z + (PlayerWidth - 2f))) ||
+
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 3f), _playerTransform.position.y + downSpeed, _playerTransform.position.z - (PlayerWidth - 3f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 3f), _playerTransform.position.y + downSpeed, _playerTransform.position.z - (PlayerWidth - 3f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 3f), _playerTransform.position.y + downSpeed, _playerTransform.position.z + (PlayerWidth - 3f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 3f), _playerTransform.position.y + downSpeed, _playerTransform.position.z + (PlayerWidth - 3f))) ||
+
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 4f), _playerTransform.position.y + downSpeed, _playerTransform.position.z - (PlayerWidth - 4f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 4f), _playerTransform.position.y + downSpeed, _playerTransform.position.z - (PlayerWidth - 4f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 4f), _playerTransform.position.y + downSpeed, _playerTransform.position.z + (PlayerWidth - 4f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 4f), _playerTransform.position.y + downSpeed, _playerTransform.position.z + (PlayerWidth - 4f)))
 
             )
         {
@@ -256,20 +266,30 @@ public class Player : MonoBehaviour
     private float CheckUpSpeed(float upSpeed)
     {
         if (
-            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - PlayerWidth, _playerTransform.position.y + 16f, _playerTransform.position.z - PlayerWidth)) ||
-            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + PlayerWidth, _playerTransform.position.y + 16f, _playerTransform.position.z - PlayerWidth)) ||
-            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + PlayerWidth, _playerTransform.position.y + 16f, _playerTransform.position.z + PlayerWidth)) ||
-            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - PlayerWidth, _playerTransform.position.y + 16f, _playerTransform.position.z + PlayerWidth)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - PlayerWidth, _playerTransform.position.y + PlayerHeight, _playerTransform.position.z - PlayerWidth)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + PlayerWidth, _playerTransform.position.y + PlayerHeight, _playerTransform.position.z - PlayerWidth)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + PlayerWidth, _playerTransform.position.y + PlayerHeight, _playerTransform.position.z + PlayerWidth)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - PlayerWidth, _playerTransform.position.y + PlayerHeight, _playerTransform.position.z + PlayerWidth)) ||
 
-            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 1f), _playerTransform.position.y + 16f, _playerTransform.position.z - (PlayerWidth - 1f))) ||
-            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 1f), _playerTransform.position.y + 16f, _playerTransform.position.z - (PlayerWidth - 1f))) ||
-            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 1f), _playerTransform.position.y + 16f, _playerTransform.position.z + (PlayerWidth - 1f))) ||
-            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 1f), _playerTransform.position.y + 16f, _playerTransform.position.z + (PlayerWidth - 1f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 1f), _playerTransform.position.y + PlayerHeight, _playerTransform.position.z - (PlayerWidth - 1f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 1f), _playerTransform.position.y + PlayerHeight, _playerTransform.position.z - (PlayerWidth - 1f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 1f), _playerTransform.position.y + PlayerHeight, _playerTransform.position.z + (PlayerWidth - 1f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 1f), _playerTransform.position.y + PlayerHeight, _playerTransform.position.z + (PlayerWidth - 1f))) ||
 
-            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 2f), _playerTransform.position.y + 16f, _playerTransform.position.z - (PlayerWidth - 2f))) ||
-            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 2f), _playerTransform.position.y + 16f, _playerTransform.position.z - (PlayerWidth - 2f))) ||
-            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 2f), _playerTransform.position.y + 16f, _playerTransform.position.z + (PlayerWidth - 2f))) ||
-            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 2f), _playerTransform.position.y + 16f, _playerTransform.position.z + (PlayerWidth - 2f)))
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 2f), _playerTransform.position.y + PlayerHeight, _playerTransform.position.z - (PlayerWidth - 2f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 2f), _playerTransform.position.y + PlayerHeight, _playerTransform.position.z - (PlayerWidth - 2f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 2f), _playerTransform.position.y + PlayerHeight, _playerTransform.position.z + (PlayerWidth - 2f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 2f), _playerTransform.position.y + PlayerHeight, _playerTransform.position.z + (PlayerWidth - 2f))) ||
+
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 3f), _playerTransform.position.y + PlayerHeight, _playerTransform.position.z - (PlayerWidth - 3f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 3f), _playerTransform.position.y + PlayerHeight, _playerTransform.position.z - (PlayerWidth - 3f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 3f), _playerTransform.position.y + PlayerHeight, _playerTransform.position.z + (PlayerWidth - 3f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 3f), _playerTransform.position.y + PlayerHeight, _playerTransform.position.z + (PlayerWidth - 3f))) ||
+
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 4f), _playerTransform.position.y + PlayerHeight, _playerTransform.position.z - (PlayerWidth - 4f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 4f), _playerTransform.position.y + PlayerHeight, _playerTransform.position.z - (PlayerWidth - 4f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 4f), _playerTransform.position.y + PlayerHeight, _playerTransform.position.z + (PlayerWidth - 4f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 4f), _playerTransform.position.y + PlayerHeight, _playerTransform.position.z + (PlayerWidth - 4f))) 
             )
         {
             return 0;
@@ -282,10 +302,6 @@ public class Player : MonoBehaviour
     public bool Front()
     {
         if (
-            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 4f, _playerTransform.position.z + PlayerWidth)) ||
-            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 5f, _playerTransform.position.z + PlayerWidth)) ||
-            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 6f, _playerTransform.position.z + PlayerWidth)) ||
-            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 7f, _playerTransform.position.z + PlayerWidth)) ||
             _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 8f, _playerTransform.position.z + PlayerWidth)) ||
             _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 9f, _playerTransform.position.z + PlayerWidth)) ||
             _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 10f, _playerTransform.position.z + PlayerWidth)) ||
@@ -293,7 +309,23 @@ public class Player : MonoBehaviour
             _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 12f, _playerTransform.position.z + PlayerWidth)) ||
             _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 13f, _playerTransform.position.z + PlayerWidth)) ||
             _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 14f, _playerTransform.position.z + PlayerWidth)) ||
-            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 15f, _playerTransform.position.z + PlayerWidth))
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 15f, _playerTransform.position.z + PlayerWidth)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 16f, _playerTransform.position.z + PlayerWidth)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 17f, _playerTransform.position.z + PlayerWidth)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 18f, _playerTransform.position.z + PlayerWidth)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 19f, _playerTransform.position.z + PlayerWidth)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 20f, _playerTransform.position.z + PlayerWidth)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 21f, _playerTransform.position.z + PlayerWidth)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 22f, _playerTransform.position.z + PlayerWidth)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 23f, _playerTransform.position.z + PlayerWidth)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 24f, _playerTransform.position.z + PlayerWidth)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 25f, _playerTransform.position.z + PlayerWidth)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 26f, _playerTransform.position.z + PlayerWidth)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 27f, _playerTransform.position.z + PlayerWidth)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 28f, _playerTransform.position.z + PlayerWidth)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 29f, _playerTransform.position.z + PlayerWidth)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 30f, _playerTransform.position.z + PlayerWidth)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 31f, _playerTransform.position.z + PlayerWidth))
             )
         {
             return true;
@@ -306,10 +338,6 @@ public class Player : MonoBehaviour
     public bool Back()
     {
         if (
-            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 4f, _playerTransform.position.z - PlayerWidth)) ||
-            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 5f, _playerTransform.position.z - PlayerWidth)) ||
-            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 6f, _playerTransform.position.z - PlayerWidth)) ||
-            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 7f, _playerTransform.position.z - PlayerWidth)) ||
             _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 8f, _playerTransform.position.z - PlayerWidth)) ||
             _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 9f, _playerTransform.position.z - PlayerWidth)) ||
             _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 10f, _playerTransform.position.z - PlayerWidth)) ||
@@ -317,7 +345,23 @@ public class Player : MonoBehaviour
             _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 12f, _playerTransform.position.z - PlayerWidth)) ||
             _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 13f, _playerTransform.position.z - PlayerWidth)) ||
             _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 14f, _playerTransform.position.z - PlayerWidth)) ||
-            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 15f, _playerTransform.position.z - PlayerWidth))
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 15f, _playerTransform.position.z - PlayerWidth)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 16f, _playerTransform.position.z - PlayerWidth)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 17f, _playerTransform.position.z - PlayerWidth)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 18f, _playerTransform.position.z - PlayerWidth)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 19f, _playerTransform.position.z - PlayerWidth)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 20f, _playerTransform.position.z - PlayerWidth)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 21f, _playerTransform.position.z - PlayerWidth)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 22f, _playerTransform.position.z - PlayerWidth)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 23f, _playerTransform.position.z - PlayerWidth)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 24f, _playerTransform.position.z - PlayerWidth)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 25f, _playerTransform.position.z - PlayerWidth)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 26f, _playerTransform.position.z - PlayerWidth)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 27f, _playerTransform.position.z - PlayerWidth)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 28f, _playerTransform.position.z - PlayerWidth)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 29f, _playerTransform.position.z - PlayerWidth)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 30f, _playerTransform.position.z - PlayerWidth)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x, _playerTransform.position.y + 31f, _playerTransform.position.z - PlayerWidth)) 
             )
         {
             return true;
@@ -330,10 +374,7 @@ public class Player : MonoBehaviour
     public bool Right()
     {
         if (
-            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + PlayerWidth, _playerTransform.position.y + 4f, _playerTransform.position.z)) ||
-            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + PlayerWidth, _playerTransform.position.y + 5f, _playerTransform.position.z)) ||
-            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + PlayerWidth, _playerTransform.position.y + 6f, _playerTransform.position.z)) ||
-            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + PlayerWidth, _playerTransform.position.y + 7f, _playerTransform.position.z)) ||
+
             _world.CheckForVoxel(new Vector3(_playerTransform.position.x + PlayerWidth, _playerTransform.position.y + 8f, _playerTransform.position.z)) ||
             _world.CheckForVoxel(new Vector3(_playerTransform.position.x + PlayerWidth, _playerTransform.position.y + 9f, _playerTransform.position.z)) ||
             _world.CheckForVoxel(new Vector3(_playerTransform.position.x + PlayerWidth, _playerTransform.position.y + 10f, _playerTransform.position.z)) ||
@@ -341,7 +382,23 @@ public class Player : MonoBehaviour
             _world.CheckForVoxel(new Vector3(_playerTransform.position.x + PlayerWidth, _playerTransform.position.y + 12f, _playerTransform.position.z)) ||
             _world.CheckForVoxel(new Vector3(_playerTransform.position.x + PlayerWidth, _playerTransform.position.y + 13f, _playerTransform.position.z)) ||
             _world.CheckForVoxel(new Vector3(_playerTransform.position.x + PlayerWidth, _playerTransform.position.y + 14f, _playerTransform.position.z)) ||
-            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + PlayerWidth, _playerTransform.position.y + 15f, _playerTransform.position.z))
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + PlayerWidth, _playerTransform.position.y + 15f, _playerTransform.position.z)) || 
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + PlayerWidth, _playerTransform.position.y + 16f, _playerTransform.position.z)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + PlayerWidth, _playerTransform.position.y + 17f, _playerTransform.position.z)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + PlayerWidth, _playerTransform.position.y + 18f, _playerTransform.position.z)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + PlayerWidth, _playerTransform.position.y + 19f, _playerTransform.position.z)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + PlayerWidth, _playerTransform.position.y + 20f, _playerTransform.position.z)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + PlayerWidth, _playerTransform.position.y + 21f, _playerTransform.position.z)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + PlayerWidth, _playerTransform.position.y + 22f, _playerTransform.position.z)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + PlayerWidth, _playerTransform.position.y + 23f, _playerTransform.position.z)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + PlayerWidth, _playerTransform.position.y + 24f, _playerTransform.position.z)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + PlayerWidth, _playerTransform.position.y + 25f, _playerTransform.position.z)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + PlayerWidth, _playerTransform.position.y + 26f, _playerTransform.position.z)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + PlayerWidth, _playerTransform.position.y + 27f, _playerTransform.position.z)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + PlayerWidth, _playerTransform.position.y + 28f, _playerTransform.position.z)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + PlayerWidth, _playerTransform.position.y + 29f, _playerTransform.position.z)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + PlayerWidth, _playerTransform.position.y + 30f, _playerTransform.position.z)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + PlayerWidth, _playerTransform.position.y + 31f, _playerTransform.position.z))
             )
         {
             return true;
@@ -354,10 +411,6 @@ public class Player : MonoBehaviour
     public bool Left()
     {
         if (
-            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - PlayerWidth, _playerTransform.position.y + 4f, _playerTransform.position.z)) ||
-            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - PlayerWidth, _playerTransform.position.y + 5f, _playerTransform.position.z)) ||
-            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - PlayerWidth, _playerTransform.position.y + 6f, _playerTransform.position.z)) ||
-            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - PlayerWidth, _playerTransform.position.y + 7f, _playerTransform.position.z)) ||
             _world.CheckForVoxel(new Vector3(_playerTransform.position.x - PlayerWidth, _playerTransform.position.y + 8f, _playerTransform.position.z)) ||
             _world.CheckForVoxel(new Vector3(_playerTransform.position.x - PlayerWidth, _playerTransform.position.y + 9f, _playerTransform.position.z)) ||
             _world.CheckForVoxel(new Vector3(_playerTransform.position.x - PlayerWidth, _playerTransform.position.y + 10f, _playerTransform.position.z)) ||
@@ -365,7 +418,23 @@ public class Player : MonoBehaviour
             _world.CheckForVoxel(new Vector3(_playerTransform.position.x - PlayerWidth, _playerTransform.position.y + 12f, _playerTransform.position.z)) ||
             _world.CheckForVoxel(new Vector3(_playerTransform.position.x - PlayerWidth, _playerTransform.position.y + 13f, _playerTransform.position.z)) ||
             _world.CheckForVoxel(new Vector3(_playerTransform.position.x - PlayerWidth, _playerTransform.position.y + 14f, _playerTransform.position.z)) ||
-            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - PlayerWidth, _playerTransform.position.y + 15f, _playerTransform.position.z))
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - PlayerWidth, _playerTransform.position.y + 15f, _playerTransform.position.z)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - PlayerWidth, _playerTransform.position.y + 16f, _playerTransform.position.z)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - PlayerWidth, _playerTransform.position.y + 17f, _playerTransform.position.z)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - PlayerWidth, _playerTransform.position.y + 18f, _playerTransform.position.z)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - PlayerWidth, _playerTransform.position.y + 19f, _playerTransform.position.z)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - PlayerWidth, _playerTransform.position.y + 20f, _playerTransform.position.z)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - PlayerWidth, _playerTransform.position.y + 21f, _playerTransform.position.z)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - PlayerWidth, _playerTransform.position.y + 22f, _playerTransform.position.z)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - PlayerWidth, _playerTransform.position.y + 23f, _playerTransform.position.z)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - PlayerWidth, _playerTransform.position.y + 24f, _playerTransform.position.z)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - PlayerWidth, _playerTransform.position.y + 25f, _playerTransform.position.z)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - PlayerWidth, _playerTransform.position.y + 26f, _playerTransform.position.z)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - PlayerWidth, _playerTransform.position.y + 27f, _playerTransform.position.z)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - PlayerWidth, _playerTransform.position.y + 28f, _playerTransform.position.z)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - PlayerWidth, _playerTransform.position.y + 29f, _playerTransform.position.z)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - PlayerWidth, _playerTransform.position.y + 30f, _playerTransform.position.z)) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - PlayerWidth, _playerTransform.position.y + 31f, _playerTransform.position.z))
             )
         {
             return true;
@@ -380,10 +449,10 @@ public class Player : MonoBehaviour
         if (
         #region Layers
             //Ground Layer
-            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 1f), _playerTransform.position.y, _playerTransform.position.z - (PlayerWidth -1f))) ||
-            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 1f), _playerTransform.position.y, _playerTransform.position.z - (PlayerWidth -1f))) ||
-            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 1f), _playerTransform.position.y, _playerTransform.position.z + (PlayerWidth -1f))) ||
-            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 1f), _playerTransform.position.y, _playerTransform.position.z + (PlayerWidth -1f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 1f), _playerTransform.position.y, _playerTransform.position.z - (PlayerWidth - 1f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 1f), _playerTransform.position.y, _playerTransform.position.z - (PlayerWidth - 1f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 1f), _playerTransform.position.y, _playerTransform.position.z + (PlayerWidth - 1f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 1f), _playerTransform.position.y, _playerTransform.position.z + (PlayerWidth - 1f))) ||
 
             _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 2f), _playerTransform.position.y, _playerTransform.position.z - (PlayerWidth - 2f))) ||
             _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 2f), _playerTransform.position.y, _playerTransform.position.z - (PlayerWidth - 2f))) ||
@@ -418,7 +487,47 @@ public class Player : MonoBehaviour
             _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 2f), _playerTransform.position.y + 3f, _playerTransform.position.z - (PlayerWidth - 2f))) ||
             _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 2f), _playerTransform.position.y + 3f, _playerTransform.position.z - (PlayerWidth - 2f))) ||
             _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 2f), _playerTransform.position.y + 3f, _playerTransform.position.z + (PlayerWidth - 2f))) ||
-            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 2f), _playerTransform.position.y + 3f, _playerTransform.position.z + (PlayerWidth - 2f))) 
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 2f), _playerTransform.position.y + 3f, _playerTransform.position.z + (PlayerWidth - 2f))) ||
+            //Fourth Layer
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 1f), _playerTransform.position.y + 4f, _playerTransform.position.z - (PlayerWidth - 1f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 1f), _playerTransform.position.y + 4f, _playerTransform.position.z - (PlayerWidth - 1f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 1f), _playerTransform.position.y + 4f, _playerTransform.position.z + (PlayerWidth - 1f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 1f), _playerTransform.position.y + 4f, _playerTransform.position.z + (PlayerWidth - 1f))) ||
+                                                                                                                   
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 2f), _playerTransform.position.y + 4f, _playerTransform.position.z - (PlayerWidth - 2f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 2f), _playerTransform.position.y + 4f, _playerTransform.position.z - (PlayerWidth - 2f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 2f), _playerTransform.position.y + 4f, _playerTransform.position.z + (PlayerWidth - 2f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 2f), _playerTransform.position.y + 4f, _playerTransform.position.z + (PlayerWidth - 2f))) ||
+            //Fifth Layer       
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 1f), _playerTransform.position.y + 5f, _playerTransform.position.z - (PlayerWidth - 1f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 1f), _playerTransform.position.y + 5f, _playerTransform.position.z - (PlayerWidth - 1f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 1f), _playerTransform.position.y + 5f, _playerTransform.position.z + (PlayerWidth - 1f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 1f), _playerTransform.position.y + 5f, _playerTransform.position.z + (PlayerWidth - 1f))) ||
+                                                                                                                             
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 2f), _playerTransform.position.y + 5f, _playerTransform.position.z - (PlayerWidth - 2f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 2f), _playerTransform.position.y + 5f, _playerTransform.position.z - (PlayerWidth - 2f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 2f), _playerTransform.position.y + 5f, _playerTransform.position.z + (PlayerWidth - 2f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 2f), _playerTransform.position.y + 5f, _playerTransform.position.z + (PlayerWidth - 2f))) ||
+            //Sixth Layer 
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 1f), _playerTransform.position.y + 6f, _playerTransform.position.z - (PlayerWidth - 1f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 1f), _playerTransform.position.y + 6f, _playerTransform.position.z - (PlayerWidth - 1f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 1f), _playerTransform.position.y + 6f, _playerTransform.position.z + (PlayerWidth - 1f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 1f), _playerTransform.position.y + 6f, _playerTransform.position.z + (PlayerWidth - 1f))) ||
+                                                                                                                             
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 2f), _playerTransform.position.y + 6f, _playerTransform.position.z - (PlayerWidth - 2f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 2f), _playerTransform.position.y + 6f, _playerTransform.position.z - (PlayerWidth - 2f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 2f), _playerTransform.position.y + 6f, _playerTransform.position.z + (PlayerWidth - 2f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 2f), _playerTransform.position.y + 6f, _playerTransform.position.z + (PlayerWidth - 2f))) ||
+            //Seventh Layer      
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 1f), _playerTransform.position.y + 7f, _playerTransform.position.z - (PlayerWidth - 1f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 1f), _playerTransform.position.y + 7f, _playerTransform.position.z - (PlayerWidth - 1f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 1f), _playerTransform.position.y + 7f, _playerTransform.position.z + (PlayerWidth - 1f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 1f), _playerTransform.position.y + 7f, _playerTransform.position.z + (PlayerWidth - 1f))) ||
+                                                                                                                             
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 2f), _playerTransform.position.y + 7f, _playerTransform.position.z - (PlayerWidth - 2f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 2f), _playerTransform.position.y + 7f, _playerTransform.position.z - (PlayerWidth - 2f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x + (PlayerWidth - 2f), _playerTransform.position.y + 7f, _playerTransform.position.z + (PlayerWidth - 2f))) ||
+            _world.CheckForVoxel(new Vector3(_playerTransform.position.x - (PlayerWidth - 2f), _playerTransform.position.y + 7f, _playerTransform.position.z + (PlayerWidth - 2f)))
         #endregion
             )
         {

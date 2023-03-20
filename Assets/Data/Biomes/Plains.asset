@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BiomeName: Plains
   SolidGroundHeight: 64
-  TerrainHeight: 256
-  TerrainScale: 0.001
+  TerrainHeight: 64
+  TerrainScale: 0.0025
   TerrainOctaves: 5
   TerrainPersistance: 0.6
   TerrainRedistributionModifier: 1
