@@ -37,8 +37,8 @@ public static class VoxelData
     {
         new Vector3(0,0,-VoxelSize),
         new Vector3(0,0,VoxelSize),
-        new Vector3(0,VoxelSize,0),
         new Vector3(0,-VoxelSize,0),
+        new Vector3(0,VoxelSize,0),
         new Vector3(-VoxelSize,0,0),
         new Vector3(VoxelSize,0,0)
     };
@@ -47,8 +47,8 @@ public static class VoxelData
       // 0  1  2  2  1  3
         {0, 3, 1, 2}, // Back Face
 		{5, 6, 4, 7}, // Front Face
-		{3, 7, 2, 6}, // Top Face
 		{1, 5, 0, 4}, // Bottom Face
+        {3, 7, 2, 6}, // Top Face
 		{4, 7, 0, 3}, // Left Face
 		{1, 2, 5, 6}  // Right Face
 

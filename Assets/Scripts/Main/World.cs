@@ -377,9 +377,9 @@ public class VoxelType
             case 1:
                 return frontFaceTexture;
             case 2:
-                return topFaceTexture;
-            case 3:
                 return bottomFaceTexture;
+            case 3:
+                return topFaceTexture;
             case 4:
                 return leftFaceTexture;
             case 5:
