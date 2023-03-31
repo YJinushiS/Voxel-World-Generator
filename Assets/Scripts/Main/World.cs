@@ -245,7 +245,7 @@ public class World : MonoBehaviour
     public bool CheckForVoxel(Vector3 pos)
     { //maybe error
         ChunkCoord thisChunk = new(pos);
-        if (!IsChunkInWorld(thisChunk)||pos.y <0 ||pos.y>VoxelData.WorldHeightInVoxels*VoxelData.VoxelSize)
+        if (!IsChunkInWorld(thisChunk))
             return false;
         if (_chunks[thisChunk.X, thisChunk.Y, thisChunk.Z] != null && _chunks[thisChunk.X, thisChunk.Y, thisChunk.Z].IsEditable)
         {
@@ -268,7 +268,7 @@ public class World : MonoBehaviour
     public bool CheckIfVoxelTransparent(Vector3 pos)
     {
         ChunkCoord thisChunk = new(pos);
-        if (!IsChunkInWorld(thisChunk) || pos.y < 0 || pos.y > VoxelData.WorldHeightInVoxels * VoxelData.VoxelSize)
+        if (!IsChunkInWorld(thisChunk))
             return false;
         if (_chunks[thisChunk.X,thisChunk.Y, thisChunk.Z] != null && _chunks[thisChunk.X, thisChunk.Y, thisChunk.Z].IsEditable)
         {

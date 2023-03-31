@@ -657,7 +657,7 @@ Transform:
   m_GameObject: {fileID: 219501142}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1280, y: 25, z: 1280}
-  m_LocalScale: {x: 1000, y: 100, z: 1000}
+  m_LocalScale: {x: 4000, y: 100, z: 4000}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -2851,7 +2851,7 @@ MonoBehaviour:
   _gravity: -39.2
   PlayerWidth: 4.8
   PlayerHeight: 32
-  VoxelRadius: 10
+  VoxelRadius: 4
   SelectedBlockIndex: 1
 --- !u!224 &1334167927 stripped
 RectTransform:

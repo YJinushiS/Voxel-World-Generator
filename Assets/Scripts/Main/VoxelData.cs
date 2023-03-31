@@ -5,7 +5,7 @@ public static class VoxelData
 {
     public static readonly int ChunkHeightInVoxels = 32;
     public static readonly int ChunkWidthInVoxels = 32;
-    public static readonly int WorldWidthInChunks = 40;
+    public static readonly int WorldWidthInChunks = 20;
     public static readonly int WorldHeightInChunks = 20;
     public static readonly int ViewDistanceInChunks = 4;
     public static int WorldWidthInVoxels
@@ -27,20 +27,20 @@ public static class VoxelData
 
     public static readonly Vector3[] VoxelVerts = new Vector3[8]
     {
-        new Vector3(0, 0, 0), new Vector3(VoxelSize, 0,0),
-        new Vector3(VoxelSize, VoxelSize,0), new Vector3(0,VoxelSize,0),
-        new Vector3(0, 0, VoxelSize), new Vector3(VoxelSize, 0,VoxelSize),
-        new Vector3(VoxelSize, VoxelSize,VoxelSize), new Vector3(0,VoxelSize,VoxelSize)
+        new Vector3(0, 0, 0), new Vector3(1, 0, 0),
+        new Vector3(1, 1, 0), new Vector3(0, 1, 0),
+        new Vector3(0, 0, 1), new Vector3(1, 0, 1),
+        new Vector3(1, 1, 1), new Vector3(0, 1, 1)
 
     };
     public static readonly Vector3[] FaceCheck = new Vector3[6]
     {
-        new Vector3(0,0,-VoxelSize),
-        new Vector3(0,0,VoxelSize),
-        new Vector3(0,-VoxelSize,0),
-        new Vector3(0,VoxelSize,0),
-        new Vector3(-VoxelSize,0,0),
-        new Vector3(VoxelSize,0,0)
+        new Vector3(0,0,-1),
+        new Vector3(0,0,1),
+        new Vector3(0,-1,0),
+        new Vector3(0,1,0),
+        new Vector3(-1,0,0),
+        new Vector3(1,0,0)
     };
     public static readonly long[,] VoxelTris = new long[6, 4]
     {
