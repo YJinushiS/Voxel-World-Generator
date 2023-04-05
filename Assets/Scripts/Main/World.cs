@@ -20,7 +20,7 @@ public class World : MonoBehaviour
     public VoxelType[] VoxelTypes;
     public BiomeAttributes Biome;
 
-    Chunk[,,] _chunks = new Chunk[VoxelData.WorldWidthInChunks, VoxelData.WorldHeightInChunks, VoxelData.WorldWidthInChunks];
+    Chunk[] _chunks = new Chunk[VoxelData.WorldWidthInChunks*VoxelData.WorldHeightInChunks*VoxelData.WorldWidthInChunks];
     
     List<ChunkCoord> _activeChunks = new();
     public ChunkCoord PlayerChunkCoord;
@@ -96,7 +96,8 @@ public class World : MonoBehaviour
         int x = Mathf.FloorToInt(pos.x / (VoxelData.ChunkWidthInVoxels * VoxelData.VoxelSize));
         int y = Mathf.FloorToInt(pos.y / (VoxelData.ChunkHeightInVoxels * VoxelData.VoxelSize));
         int z = Mathf.FloorToInt(pos.z / (VoxelData.ChunkWidthInVoxels * VoxelData.VoxelSize));
-        return _chunks[x, y, z];
+        int index = x + y * VoxelData.WorldHeightInChunksSq + z * VoxelData.WorldWidthInChunks;
+        return _chunks[index];
     }
     private void GenerateWorld()
     {
@@ -107,8 +108,8 @@ public class World : MonoBehaviour
             {
                 for (int z = (VoxelData.WorldWidthInChunks / 2) - VoxelData.ViewDistanceInChunks; z < (VoxelData.WorldWidthInChunks / 2) + VoxelData.ViewDistanceInChunks; z++)
                 {
-
-                    _chunks[x, y, z] = new Chunk(new ChunkCoord(x, y, z), this, true);
+                    int index = x + y * VoxelData.WorldHeightInChunksSq + z * VoxelData.WorldWidthInChunks;
+                    _chunks[index] = new Chunk(new ChunkCoord(x, y, z), this, true);
                     _activeChunks.Add(new ChunkCoord(x, y, z));
 
                 }
@@ -126,7 +127,8 @@ public class World : MonoBehaviour
         ChunkCoord c = _chunksToCreate[0];
         _chunksToCreate.RemoveAt(0);
         _activeChunks.Add(c);
-        _chunks[c.X, c.Y, c.Z].Initialize();
+        int index = c.X + c.Y * VoxelData.WorldHeightInChunksSq + c.Z * VoxelData.WorldWidthInChunks;
+        _chunks[index].Initialize();
     }
     void UpdateChunk()
     {
@@ -158,17 +160,17 @@ public class World : MonoBehaviour
                 VoxelMod v = queue.Dequeue();
 
                 ChunkCoord c = GetChunkCoordFromVector3(v.Position);
-
-                if (_chunks[c.X, c.Y, c.Z] == null)
+                int index = c.X + c.Y * VoxelData.WorldHeightInChunksSq + c.Z * VoxelData.WorldWidthInChunks;
+                if (_chunks[index] == null)
                 {
-                    _chunks[c.X, c.Y, c.Z] = new Chunk(c, this, true);
+                    _chunks[index] = new Chunk(c, this, true);
                     _activeChunks.Add(c);
                 }
 
-                _chunks[c.X, c.Y, c.Z].Modifications.Enqueue(v);
+                _chunks[index].Modifications.Enqueue(v);
 
-                if (!_chunksToUpdate.Contains(_chunks[c.X, c.Y, c.Z]))
-                    _chunksToUpdate.Add(_chunks[c.X, c.Y, c.Z]);
+                if (!_chunksToUpdate.Contains(_chunks[index]))
+                    _chunksToUpdate.Add(_chunks[index]);
 
             }
         }
@@ -198,15 +200,15 @@ public class World : MonoBehaviour
                     {
 
                         ChunkCoord thisChunk = new(x, y, z);
-
-                        if (_chunks[x, y, z] == null)
+                        int index = x + y * VoxelData.WorldHeightInChunksSq + z * VoxelData.WorldWidthInChunks;
+                        if (_chunks[index] == null)
                         {
-                            _chunks[x, y, z] = new Chunk(new ChunkCoord(x, y, z), this, false);
+                            _chunks[index] = new Chunk(new ChunkCoord(x, y, z), this, false);
                             _chunksToCreate.Add(new ChunkCoord(x, y, z));
                         }
-                        else if (!_chunks[x, y, z].IsActive)
+                        else if (!_chunks[index].IsActive)
                         {
-                            _chunks[x, y, z].IsActive = true;
+                            _chunks[index].IsActive = true;
                         }
                         _activeChunks.Add(thisChunk);
                         // Check if this chunk was already in the active chunks list.
@@ -224,7 +226,10 @@ public class World : MonoBehaviour
         }
 
         foreach (ChunkCoord chunkCoord in previouslyActiveChunks)
-            _chunks[chunkCoord.X, chunkCoord.Y, chunkCoord.Z].IsActive = false;
+        {
+            int index = chunkCoord.X + chunkCoord.Y * VoxelData.WorldHeightInChunksSq + chunkCoord.Z * VoxelData.WorldWidthInChunks;
+            _chunks[index].IsActive = false;
+        }
 
     }
 
@@ -249,11 +254,12 @@ public class World : MonoBehaviour
     public bool CheckForVoxel(Vector3 pos)
     { //maybe error
         ChunkCoord thisChunk = new(pos);
+        int index = thisChunk.X + thisChunk.Y * VoxelData.WorldHeightInChunksSq + thisChunk.Z * VoxelData.WorldWidthInChunks;
         if (!IsChunkInWorld(thisChunk))
             return false;
-        if (_chunks[thisChunk.X, thisChunk.Y, thisChunk.Z] != null && _chunks[thisChunk.X, thisChunk.Y, thisChunk.Z].IsEditable)
+        if (_chunks[index] != null && _chunks[index].IsEditable)
         {
-            return VoxelTypes[_chunks[thisChunk.X, thisChunk.Y, thisChunk.Z].GetVoxelFromGlobalVector3(pos)].IsSolid;
+            return VoxelTypes[_chunks[index].GetVoxelFromGlobalVector3(pos)].IsSolid;
         }
         return VoxelTypes[GetVoxel(pos)].IsSolid;
 
@@ -272,11 +278,12 @@ public class World : MonoBehaviour
     public bool CheckIfVoxelTransparent(Vector3 pos)
     {
         ChunkCoord thisChunk = new(pos);
+        int index = thisChunk.X + thisChunk.Y * VoxelData.WorldHeightInChunksSq + thisChunk.Z * VoxelData.WorldWidthInChunks;
         if (!IsChunkInWorld(thisChunk))
             return false;
-        if (_chunks[thisChunk.X,thisChunk.Y, thisChunk.Z] != null && _chunks[thisChunk.X, thisChunk.Y, thisChunk.Z].IsEditable)
+        if (_chunks[index] != null && _chunks[index].IsEditable)
         {
-            return VoxelTypes[_chunks[thisChunk.X, thisChunk.Y, thisChunk.Z].GetVoxelFromGlobalVector3(pos)].IsTransparent;
+            return VoxelTypes[_chunks[index].GetVoxelFromGlobalVector3(pos)].IsTransparent;
         }
         return VoxelTypes[GetVoxel(pos)].IsTransparent;
     }

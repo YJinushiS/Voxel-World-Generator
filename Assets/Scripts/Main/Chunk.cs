@@ -23,8 +23,8 @@ public class Chunk
     Material[] _voxelAtlases = new Material[2];
     List<Vector2> _uvs = new();
 
-    public byte[,,] VoxelMap = new byte[VoxelData.ChunkWidthInVoxels, VoxelData.ChunkHeightInVoxels,
-        VoxelData.ChunkWidthInVoxels];
+    public byte[] VoxelMap =
+        new byte[VoxelData.ChunkWidthInVoxels * VoxelData.ChunkHeightInVoxels * VoxelData.ChunkWidthInVoxels];
 
     public Queue<VoxelMod> Modifications = new();
 
@@ -120,8 +120,8 @@ public class Chunk
         xCheck -= Mathf.FloorToInt(Position.x);
         yCheck -= Mathf.FloorToInt(Position.y);
         zCheck -= Mathf.FloorToInt(Position.z);
-
-        VoxelMap[xCheck, yCheck, zCheck] = newID;
+        int index = xCheck + yCheck * VoxelData.ChunkHeightSq + zCheck * VoxelData.ChunkWidthInVoxels;
+        VoxelMap[index] = newID;
         UpdateSurroundingVoxels(xCheck, yCheck, zCheck);
         PrivateUpdateChunk();
     }
@@ -135,8 +135,8 @@ public class Chunk
         xCheck -= Mathf.FloorToInt(Position.x);
         yCheck -= Mathf.FloorToInt(Position.y);
         zCheck -= Mathf.FloorToInt(Position.z);
-
-        VoxelMap[xCheck, yCheck, zCheck] = newID;
+        int index = xCheck + yCheck * VoxelData.ChunkHeightSq + zCheck * VoxelData.ChunkWidthInVoxels;
+        VoxelMap[index] = newID;
         //UpdateSurroundingVoxels(xCheck, yCheck, zCheck);
     }
 
@@ -162,7 +162,9 @@ public class Chunk
                     (newPos.y >= 0 && newPos.y < VoxelData.ChunkHeightInVoxels) &&
                     (newPos.z >= 0 && newPos.z < VoxelData.ChunkWidthInVoxels))
                 {
-                    VoxelMap[(int)newPos.x, (int)newPos.y, (int)newPos.z] = newID;
+                    int index = (int)(newPos.x) + (int)(newPos.y) * VoxelData.ChunkHeightSq +
+                                (int)(newPos.z) * VoxelData.ChunkWidthInVoxels;
+                    VoxelMap[index] = newID;
                     //UpdateSurroundingVoxels((int)newPos.x, (int)newPos.y, (int)newPos.z);
                 }
                 else
@@ -174,7 +176,7 @@ public class Chunk
             }
         }
 
-        PrivateUpdateChunk();
+        UpdateChunk();
 
         #region Top Chunk Layer
 
@@ -266,7 +268,8 @@ public class Chunk
             {
                 for (int z = 0; z < VoxelData.ChunkWidthInVoxels; z++)
                 {
-                    VoxelMap[x, y, z] =
+                    int index = x + y * VoxelData.ChunkHeightSq + z * VoxelData.ChunkWidthInVoxels;
+                    VoxelMap[index] =
                         WorldObj.GetVoxel(new Vector3(x * VoxelSize, y * VoxelSize, z * VoxelSize) + Position);
                 }
             }
@@ -291,7 +294,9 @@ public class Chunk
         {
             VoxelMod v = Modifications.Dequeue();
             Vector3 position = v.Position -= Position;
-            VoxelMap[(int)position.x, (int)position.y, (int)position.z] = v.ID;
+            int index = (int)(position.x) + (int)(position.y) * VoxelData.ChunkHeightSq +
+                        (int)(position.z) * VoxelData.ChunkWidthInVoxels;
+            VoxelMap[index] = v.ID;
         }
 
         ClearMeshData();
@@ -301,8 +306,9 @@ public class Chunk
             {
                 for (int z = 0; z < VoxelData.ChunkWidthInVoxels; z++)
                 {
-                    if (WorldObj.VoxelTypes[VoxelMap[x, y, z]].IsSolid)
-                        UpdateMeshData(new Vector3(x * VoxelSize, y * VoxelSize, z * VoxelSize));
+                    int index = x + y * VoxelData.ChunkHeightSq + z * VoxelData.ChunkWidthInVoxels;
+                    if (WorldObj.VoxelTypes[VoxelMap[index]].IsSolid)
+                        UpdateMeshData(new Vector3(x, y, z));
                 }
             }
         }
@@ -329,8 +335,8 @@ public class Chunk
     public byte GetVoxelFromMap(Vector3 pos)
     {
         pos -= Position;
-
-        return VoxelMap[(int)pos.x, (int)pos.y, (int)pos.z];
+        int index = (int)(pos.x) + (int)(pos.y) * VoxelData.ChunkHeightSq + (int)(pos.z) * VoxelData.ChunkWidthInVoxels;
+        return VoxelMap[index];
     }
 
     bool CheckVoxelIsTransparent(Vector3 pos)
@@ -341,8 +347,8 @@ public class Chunk
 
         if (!IsVoxelInChunk(x, y, z))
             return WorldObj.CheckIfVoxelTransparent(pos + Position);
-
-        return WorldObj.VoxelTypes[VoxelMap[x, y, z]].IsTransparent;
+        int index = x + y * VoxelData.ChunkHeightSq + z * VoxelData.ChunkWidthInVoxels;
+        return WorldObj.VoxelTypes[VoxelMap[index]].IsTransparent;
     }
 
     bool CheckVoxelIsSolid(Vector3 pos)
@@ -353,8 +359,8 @@ public class Chunk
 
         if (!IsVoxelInChunk(x, y, z))
             return WorldObj.CheckForVoxel(pos + Position);
-
-        return WorldObj.VoxelTypes[VoxelMap[x, y, z]].IsSolid;
+        int index = x + y * VoxelData.ChunkHeightSq + z * VoxelData.ChunkWidthInVoxels;
+        return WorldObj.VoxelTypes[VoxelMap[index]].IsSolid;
     }
 
     public byte GetVoxelFromGlobalVector3(Vector3 pos)
@@ -366,20 +372,24 @@ public class Chunk
         xCheck -= Mathf.FloorToInt(Position.x);
         yCheck -= Mathf.FloorToInt(Position.y);
         zCheck -= Mathf.FloorToInt(Position.z);
-        return VoxelMap[xCheck, yCheck, zCheck];
+        int index = xCheck + yCheck * VoxelData.ChunkHeightSq + zCheck * VoxelData.ChunkWidthInVoxels;
+        return VoxelMap[index];
     }
 
     void UpdateMeshData(Vector3 pos)
     {
-        byte voxelID = VoxelMap[(int)(pos.x), (int)(pos.y), (int)(pos.z)];
+        int index = (int)(pos.x) + (int)(pos.y) * VoxelData.ChunkHeightSq + (int)(pos.z) * VoxelData.ChunkWidthInVoxels;
+        byte voxelID = VoxelMap[index];
         bool isTransparent = WorldObj.VoxelTypes[voxelID].IsTransparent;
         for (int j = 0; j < 6; j++)
         {
-            if (j == 2 && WorldObj.IsVoxelInWorld(pos + VoxelData.FaceCheck[j]))
+            Vector3 faceCheck = pos + VoxelData.FaceCheck[j] + Position;
+            if (j == 2 && !WorldObj.IsVoxelInWorld(faceCheck))
             {
             }
-            else if ((CheckVoxelIsTransparent(pos + VoxelData.FaceCheck[j]) != CheckVoxelIsTransparent(pos) ||
-                      CheckVoxelIsSolid(pos + VoxelData.FaceCheck[j]) != CheckVoxelIsSolid(pos)))
+            else if ((CheckVoxelIsTransparent(pos) != CheckVoxelIsTransparent(pos + VoxelData.FaceCheck[j]) ||
+                      !CheckVoxelIsSolid(pos + VoxelData.FaceCheck[j])) &&
+                     WorldObj.IsVoxelInWorld(faceCheck))
             {
                 _vertices.Add(pos + VoxelData.VoxelVerts[VoxelData.VoxelTris[j, 0]]);
                 _vertices.Add(pos + VoxelData.VoxelVerts[VoxelData.VoxelTris[j, 1]]);

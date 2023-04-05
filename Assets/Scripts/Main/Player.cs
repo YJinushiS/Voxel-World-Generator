@@ -147,19 +147,19 @@ public class Player : MonoBehaviour
         {
             if (_isCursorLocked)
             {
+                Time.timeScale = 0;
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
-                Time.timeScale = 0;
                 _isCursorLocked = false;
             }
         }
-        if (_mouse.leftButton.wasPressedThisFrame)
+        if (_keyboard.escapeKey.wasPressedThisFrame)
         {
             if (!_isCursorLocked)
             {
+                Time.timeScale = 1;
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
-                Time.timeScale = 1;
                 _isCursorLocked = true;
             }
         }

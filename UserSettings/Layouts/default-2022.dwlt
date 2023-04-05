@@ -43,7 +43,7 @@ MonoBehaviour:
     width: 1920
     height: 1037
   m_ShowMode: 4
-  m_Title: Inspector
+  m_Title: Scene
   m_RootView: {fileID: 4}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -244,7 +244,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 50}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 86
+  controlID: 92
 --- !u!114 &11
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -264,8 +264,8 @@ MonoBehaviour:
     y: 0
     width: 831
     height: 624
-  m_MinSize: {x: 900, y: 216}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 901, y: 237}
+  m_MaxSize: {x: 4001, y: 4021}
   m_ActualView: {fileID: 14}
   m_Panes:
   - {fileID: 18}
@@ -391,7 +391,7 @@ MonoBehaviour:
         m_PaneScroll: {x: 0, y: 0}
         m_ViewType: 1
         updateViewLive: 0
-        m_CurrentFrameIndex: 0
+        m_CurrentFrameIndex: 3427
         m_HierarchyOverruledThreadFromSelection: 0
         m_ProfilerViewFilteringOptions: 1
         m_FrameDataHierarchyView:
@@ -1366,7 +1366,7 @@ MonoBehaviour:
     m_HSlider: 0
     m_VSlider: 0
     m_IgnoreScrollWheelUntilClicked: 0
-    m_EnableMouseInput: 1
+    m_EnableMouseInput: 0
     m_EnableSliderZoomHorizontal: 0
     m_EnableSliderZoomVertical: 0
     m_UniformScale: 1
@@ -3360,9 +3360,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 344.3651, y: 117.98522, z: 263.78378}
+    m_Target: {x: 309.03265, y: -2.7682362, z: 250.87358}
     speed: 2
-    m_Value: {x: 344.3651, y: 117.98522, z: 263.78378}
+    m_Value: {x: 309.03265, y: -2.7682374, z: 250.87358}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -3408,9 +3408,9 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: -0.013299541, y: -0.9846779, z: 0.15123382, w: -0.08650487}
+    m_Target: {x: 0.060179275, y: -0.91956615, z: 0.35509902, w: 0.15783446}
     speed: 2
-    m_Value: {x: -0.016540527, y: -0.9802923, z: 0.1732192, w: -0.09353335}
+    m_Value: {x: 0.059639685, y: -0.91969585, z: 0.35514796, w: 0.1564369}
   m_Size:
     m_Target: 64.11273
     speed: 2
@@ -3503,7 +3503,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 2e7e0000
     m_LastClickedID: 32302
-    m_ExpandedIDs: 00000000a67c0000a87c0000aa7c0000ac7c000000ca9a3b
+    m_ExpandedIDs: 000000005e830000608300006283000064830000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -3531,7 +3531,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000a67c0000a87c0000aa7c0000ac7c0000
+    m_ExpandedIDs: 000000005e830000608300006283000064830000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -3660,9 +3660,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: f6920000
-      m_LastClickedID: 37622
-      m_ExpandedIDs: 66ebffffdafaffffcc930000
+      m_SelectedIDs: 
+      m_LastClickedID: 0
+      m_ExpandedIDs: cefaffff627d0000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -10512,7 +10512,7 @@ MonoBehaviour:
       changingManually: 0
     hasRemote: 1
     lastCurrentRemoteChangedEvent:
-      updatedTimeString: 2023-04-05T10:05:03.419+03:00
+      updatedTimeString: 2023-04-05T20:06:24.478+03:00
       cacheType: 1
     metricsEnabled: 1
     newRepositoryRemoteUrl: https://github.com/YJinushiS/Voxel-World-Generator.git
@@ -10526,7 +10526,7 @@ MonoBehaviour:
       newGitEmail: 109348482+YJinushiS@users.noreply.github.com
       needsSaving: 0
       lastCheckUserChangedEvent:
-        updatedTimeString: 2023-04-05T09:52:09.216+03:00
+        updatedTimeString: 2023-04-05T20:11:27.401+03:00
         cacheType: 8
     webTimeout: 3000
     gitTimeout: 5000

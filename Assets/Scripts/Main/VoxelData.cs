@@ -8,6 +8,7 @@ public static class VoxelData
     public static readonly int WorldWidthInChunks = 20;
     public static readonly int WorldHeightInChunks = 10;
     public static readonly int ViewDistanceInChunks = 4;
+    public static readonly int WorldHeightInChunksSq = WorldHeightInChunks * WorldWidthInChunks;
     public static readonly int ChunkHeightSq = ChunkHeightInVoxels * ChunkHeightInVoxels;
     public static int WorldWidthInVoxels
     {
