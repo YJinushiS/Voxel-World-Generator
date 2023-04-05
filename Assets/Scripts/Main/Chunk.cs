@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Collections.Generic;
+using Unity.Profiling;
 using UnityEngine;
 
 public class Chunk
@@ -34,6 +35,11 @@ public class Chunk
     private bool _isActive;
     private bool _isVoxelMapPopulated = false;
     private bool _threadLocked = false;
+
+    private static ProfilerMarker _meshingMarker = new(ProfilerCategory.Loading, "Meshing");
+
+    private static ProfilerMarker _generatingVoxelsInChunkMarker =
+        new(ProfilerCategory.Loading, "Generating Voxels In Chunk");
 
     #endregion
 
@@ -253,6 +259,7 @@ public class Chunk
 
     void PopulateVoxelMap()
     {
+        _generatingVoxelsInChunkMarker.Begin();
         for (int y = 0; y < VoxelData.ChunkHeightInVoxels; y++)
         {
             for (int x = 0; x < VoxelData.ChunkWidthInVoxels; x++)
@@ -267,6 +274,7 @@ public class Chunk
 
         PrivateUpdateChunk();
         _isVoxelMapPopulated = true;
+        _generatingVoxelsInChunkMarker.End();
     }
 
     public void UpdateChunk()
@@ -277,6 +285,7 @@ public class Chunk
 
     private void PrivateUpdateChunk()
     {
+        _meshingMarker.Begin();
         _threadLocked = true;
         while (Modifications.Count > 0)
         {
@@ -304,6 +313,8 @@ public class Chunk
         }
 
         _threadLocked = false;
+        _meshingMarker.End();
+        _generatingVoxelsInChunkMarker.End();
     }
 
     void ClearMeshData()
@@ -364,7 +375,11 @@ public class Chunk
         bool isTransparent = WorldObj.VoxelTypes[voxelID].IsTransparent;
         for (int j = 0; j < 6; j++)
         {
-            if (CheckVoxelIsTransparent(pos + VoxelData.FaceCheck[j]) != CheckVoxelIsTransparent(pos) || CheckVoxelIsSolid(pos + VoxelData.FaceCheck[j]) != CheckVoxelIsSolid(pos))
+            if (j == 2 && WorldObj.IsVoxelInWorld(pos + VoxelData.FaceCheck[j]))
+            {
+            }
+            else if ((CheckVoxelIsTransparent(pos + VoxelData.FaceCheck[j]) != CheckVoxelIsTransparent(pos) ||
+                      CheckVoxelIsSolid(pos + VoxelData.FaceCheck[j]) != CheckVoxelIsSolid(pos)))
             {
                 _vertices.Add(pos + VoxelData.VoxelVerts[VoxelData.VoxelTris[j, 0]]);
                 _vertices.Add(pos + VoxelData.VoxelVerts[VoxelData.VoxelTris[j, 1]]);

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Profiling;
 using UnityEngine;
 
 public class World : MonoBehaviour
@@ -35,6 +36,8 @@ public class World : MonoBehaviour
     bool _applyingModifications = false;
 
     Queue<Queue<VoxelMod>> _modifications = new();
+
+    private static ProfilerMarker _generatingMarker = new(ProfilerCategory.Loading, "Generating");
     #endregion
     private void Awake()
     {
@@ -97,7 +100,7 @@ public class World : MonoBehaviour
     }
     private void GenerateWorld()
     {
-
+        _generatingMarker.Begin();
         for (int x = (VoxelData.WorldWidthInChunks/2)-VoxelData.ViewDistanceInChunks; x < (VoxelData.WorldWidthInChunks / 2) + VoxelData.ViewDistanceInChunks; x++)
         {
             for (int y = (VoxelData.WorldHeightInChunks / 2) - VoxelData.ViewDistanceInChunks; y < (VoxelData.WorldHeightInChunks / 2) + VoxelData.ViewDistanceInChunks; y++)
@@ -112,9 +115,10 @@ public class World : MonoBehaviour
             }
         }
 
-        _spawn = new Vector3(VoxelData.WorldWidthInVoxels * VoxelData.VoxelSize / 2, 200, VoxelData.WorldWidthInVoxels * VoxelData.VoxelSize / 2);
+        _spawn = new Vector3(VoxelData.WorldWidthInVoxels * VoxelData.VoxelSize / 2, 72, VoxelData.WorldWidthInVoxels * VoxelData.VoxelSize / 2);
         Player.position = _spawn;
-
+        _generatingMarker.End();
+        Debug.Log("Generated");
     }
 
     void CreateChunks()
@@ -233,10 +237,10 @@ public class World : MonoBehaviour
             return false;
 
     }
-    bool IsVoxelInWorld(Vector3 pos)
+    public bool IsVoxelInWorld(Vector3 pos)
     {
 
-        if (pos.x >= 0 && pos.x < VoxelData.WorldWidthInVoxels * VoxelData.VoxelSize && pos.y >= 0 && pos.y < VoxelData.WorldHeightInVoxels * VoxelData.VoxelSize && pos.z >= 0 && pos.z < VoxelData.WorldWidthInVoxels * VoxelData.VoxelSize)
+        if (pos.x >= 0 && pos.x < VoxelData.WorldWidthInVoxels && pos.y >= 0 && pos.y < VoxelData.WorldHeightInVoxels && pos.z >= 0 && pos.z < VoxelData.WorldWidthInVoxels)
             return true;
         else
             return false;
